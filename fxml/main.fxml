@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.canvas.*?>
@@ -50,11 +51,13 @@
                      </cursor>
                   </Canvas>
                   <Label fx:id="coordsLabel" layoutX="-14.0" layoutY="-8.0" prefHeight="17.0" prefWidth="457.0" text="x : None y : None" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+                  <Label fx:id="badSolutionTextField" layoutX="-14.0" layoutY="1954.0" prefHeight="17.0" prefWidth="457.0" text="None" textFill="#ff2600" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" />
+                  <Label fx:id="goodSolutionTextField" layoutY="1951.0" prefHeight="17.0" prefWidth="457.0" text="None" textFill="LIME" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
       </GridPane>
-      <MenuBar prefHeight="25.0" prefWidth="362.0" fx:id="menubar">
+      <MenuBar fx:id="menubar" prefHeight="25.0" prefWidth="362.0">
          <menus>
             <Menu mnemonicParsing="false" text="Image">
                <items>

@@ -22,4 +22,6 @@ public class alertController {
     public void setLabelText(String labelText){
         alertInfo.setText(labelText);
     }
+
+
 }

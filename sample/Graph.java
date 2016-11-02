@@ -92,11 +92,10 @@ public abstract class Graph {
         Graph.drawPoints(canvas, pointsContainer);
     }
 
-    public static void drawPolynomialCurve(Canvas canvas, double[] solution,int accuracy){
+    public static void drawPolynomialCurve(Canvas canvas, double[] solution,int accuracy,Paint color){
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         Paint fill = graphicsContext.getFill();
-        double lineWidth = graphicsContext.getLineWidth();
-        graphicsContext.setFill(Color.BLUE);
+        graphicsContext.setFill(color);
         double pointx = -sizeX/2;
         double pointy = 0;
         Point tmpoint;

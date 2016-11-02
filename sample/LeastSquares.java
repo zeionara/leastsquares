@@ -1,8 +1,5 @@
 package sample;
 
-import gauss.Algorithm;
-import gauss.LinearSystem;
-import gauss.MyEquation;
 import interfaces.impls.SetPointsContainer;
 
 import java.util.ArrayList;

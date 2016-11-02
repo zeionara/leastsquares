@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,10 +29,13 @@ import sample.Point;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 
 public class mainController {
-    private double[] lastsolution;
+    private double[] lastbadsolution;
+    private double[] lastgoodsolution;
     private SetPointsContainer pointsContainer = new SetPointsContainer();
     @FXML
     MenuBar menubar;
@@ -50,6 +54,12 @@ public class mainController {
 
     @FXML
     private TableColumn<Point, Double> yColumn;
+
+    @FXML
+    private Label badSolutionTextField;
+
+    @FXML
+    private Label goodSolutionTextField;
 
     private Parent fxmlEdit;
     private FXMLLoader fxmlLoader = new FXMLLoader();
@@ -96,7 +106,8 @@ public class mainController {
     public void clearDataClicked(javafx.event.ActionEvent actionEvent){
         pointsContainer.clear();
         Graph.erasePoints(graph);
-        lastsolution = null;
+        lastbadsolution = null;
+        lastgoodsolution = null;
     }
 
     public void windowResized(Number newW, Number newH){
@@ -107,8 +118,9 @@ public class mainController {
         Graph.setSizeY(graph.getHeight());
 
         Graph.redraw(graph,pointsContainer);
-        if (lastsolution != null){
-            Graph.drawPolynomialCurve(graph,lastsolution,1000);
+        if (lastbadsolution != null){
+            Graph.drawPolynomialCurve(graph,lastbadsolution,1000,Color.RED);
+            Graph.drawPolynomialCurve(graph,lastgoodsolution,1000,Color.GREEN);
         }
     }
 
@@ -259,8 +271,57 @@ public class mainController {
 
     public void buildApprox(ActionEvent actionEvent) {
         double[] solution = LeastSquares.getKoefficients(pointsContainer,10);
-        lastsolution = solution;
+        lastbadsolution = solution;
         Graph.redraw(graph,pointsContainer);
-        Graph.drawPolynomialCurve(graph,solution,1000);
+        Graph.drawPolynomialCurve(graph,solution,1000,Color.BLUE);
+
+        double maximaldelta = 0;
+        Point sillyDot = new Point(0,0,0);
+        for (Point point : pointsContainer.getSet()){
+            if (Math.abs(getY(solution,point.getX())-point.getY())>maximaldelta){
+                maximaldelta = Math.abs(getY(solution,point.getX())-point.getY());
+                sillyDot = point;
+            }
+        }
+        pointsContainer.delete(sillyDot);
+        tablePoints.refresh();
+        solution = LeastSquares.getKoefficients(pointsContainer,10);
+        pointsContainer.add(sillyDot);
+        tablePoints.refresh();
+        lastgoodsolution = solution;
+        //Graph.redraw(graph,pointsContainer);
+        Graph.drawPolynomialCurve(graph,lastbadsolution,1000,Color.RED);
+        Graph.drawPolynomialCurve(graph,lastgoodsolution,1000,Color.GREEN);
+
+        badSolutionTextField.setText(getStringRepresentation(lastbadsolution));
+        goodSolutionTextField.setText(getStringRepresentation(lastgoodsolution));
+    }
+
+    private double getY(double[] solution,double x){
+        double rezult = 0d;
+        for (int i = 0; i < solution.length; i++){
+            rezult += solution[i]*Math.pow(x,i);
+        }
+        return rezult;
+    }
+
+    private String getStringRepresentation(double[] solution){
+        String result = "y = ";
+        double cur = 0d;
+        for (int i = 0; i < solution.length; i++){
+            cur = new BigDecimal(solution[i]).setScale(2, RoundingMode.UP).doubleValue();
+            if (cur > 0){
+                result+="+";
+            }
+            if (i == 0){
+                result += cur+"";
+            } else if (i == 1){
+                result += cur+"x";
+            } else {
+                result += cur+"x^"+i;
+            }
+
+        }
+        return result;
     }
 }
