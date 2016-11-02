@@ -58,13 +58,13 @@
          <menus>
             <Menu mnemonicParsing="false" text="Image">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveClicked" text="Save" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
                <items>
-                   <MenuItem mnemonicParsing="false" text="Add point" />
-                  <MenuItem mnemonicParsing="false" text="Remove point" />
+                   <MenuItem mnemonicParsing="false" onAction="#addPointClicked" text="Add point" />
+                  <MenuItem mnemonicParsing="false" onAction="#deletePointClicked" text="Delete point" />
                   <MenuItem mnemonicParsing="false" onAction="#editPointClicked" text="Edit point" />
                   <MenuItem mnemonicParsing="false" text="Edit approximate" />
                   <MenuItem mnemonicParsing="false" onAction="#clearDataClicked" text="Clear all" />

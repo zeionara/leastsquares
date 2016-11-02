@@ -2,16 +2,22 @@ package controllers;
 
 import interfaces.impls.SetPointsContainer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Graph;
 import sample.Point;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -25,6 +31,13 @@ public class editPointController {
     private SetPointsContainer pointsContainer;
     private Point actualPoint;
 
+    //
+    protected Parent fxmlAlert;
+    protected FXMLLoader fxmlLoader = new FXMLLoader();
+    protected alertController controller;
+    protected Stage alertStage;
+    //
+
     public void setPointsContainer (SetPointsContainer pointsContainer){
         this.pointsContainer = pointsContainer;
     }
@@ -37,9 +50,28 @@ public class editPointController {
         this.graph = graph;
     }
 
+
+    public SetPointsContainer getPointsContainer (){
+        return this.pointsContainer;
+    }
+
+    public TableView<Point> getTablePoints (){
+        return this.tablePoints;
+    }
+
+    public Canvas getGraph (){
+        return this.graph;
+    }
+
     @FXML
     private void initialize(){
-        okAddingPointButton.setDisable(true);
+        try{
+            fxmlLoader.setLocation(getClass().getResource("../fxml/alert.fxml"));
+            fxmlAlert = fxmlLoader.load();
+            controller = fxmlLoader.getController();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -64,66 +96,27 @@ public class editPointController {
             x = Double.parseDouble(setxField.getText());
             y = Double.parseDouble(setyField.getText());
         } catch (NumberFormatException e){
+            if (alertStage == null) {
+                alertStage = new Stage();
+                alertStage.setResizable(false);
+                alertStage.setTitle("Error");
+                alertStage.setScene(new Scene(fxmlAlert));
+                alertStage.initModality(Modality.APPLICATION_MODAL);
+                alertStage.initOwner(((Button)actionEvent.getSource()).getScene().getWindow());
+            }
+            alertStage.show();
             return;
         }
         actualPoint.setX(x);
         actualPoint.setY(y);
         tablePoints.refresh();
         Graph.redraw(graph,pointsContainer);
-        //redrawGraph();
         cancelPressed(actionEvent);
-    }
-
-    private boolean isNumericChar(String s){
-        if ((s.charAt(0) != '0') && (s.charAt(0) != '1') && (s.charAt(0) != '2') && (s.charAt(0)!= '3')
-                && (s.charAt(0) != '4') && (s.charAt(0) != '5') && (s.charAt(0) != '6') && (s.charAt(0) != '7') && (s.charAt(0) != '8') &&
-                (s.charAt(0) != '9') && (s.charAt(0) != '.')){
-            return false;
-        }
-        return true;
-    }
-
-    public void newxCoordinateChanged(KeyEvent keyEvent){
-        try{
-            System.out.println(setxField.getText()+keyEvent.getText());
-            x = Double.parseDouble(setxField.getText()+keyEvent.getText());
-            ((Node)setxField).setStyle("-fx-text-inner-color: black;");
-            tryDisable();
-        } catch (NumberFormatException e){
-            ((Node)setxField).setStyle("-fx-text-inner-color: red;");
-            okAddingPointButton.setDisable(true);
-        }
-    }
-    private void tryDisable(){
-        try{
-            x = Double.parseDouble(setxField.getText());
-            y = Double.parseDouble(setyField.getText());
-        } catch (NumberFormatException e){
-            return;
-        }
-        if ((setxField.getText().length() != 0) && (setyField.getText().length() != 0)){
-            okAddingPointButton.setDisable(false);
-        }
-    }
-
-    public void newyCoordinateChanged(KeyEvent keyEvent){
-        try{
-            System.out.println(setyField.getText()+keyEvent.getText());
-            y = Double.parseDouble(setyField.getText()+keyEvent.getText());
-            ((Node)setyField).setStyle("-fx-text-inner-color: black;");
-            tryDisable();
-
-        } catch (NumberFormatException e){
-            ((Node)setyField).setStyle("-fx-text-inner-color: red;");
-            okAddingPointButton.setDisable(true);
-        }
     }
 
     public void cancelPressed(javafx.event.ActionEvent actionEvent){
         Node src = (Node)actionEvent.getSource();
         Stage stage = (Stage)src.getScene().getWindow();
         stage.hide();
-
     }
-
 }

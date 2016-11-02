@@ -27,6 +27,9 @@ public class Point {
     public int getNum(){
         return num;
     }
+    public void setNum(int newNum){
+        num = newNum;
+    }
 
     public double getX(){
         return X.getValue();
@@ -47,5 +50,13 @@ public class Point {
 
     public String toString(){
         return " x : "+X+" y : "+Y;
+    }
+
+    public boolean equals(Object obj){
+        Point point = (Point)obj;
+        if ((point.getY() == getY()) && (point.getX() == getX())){
+            return true;
+        }
+        return false;
     }
 }
