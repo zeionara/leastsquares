@@ -3,6 +3,8 @@ package sample;
 import interfaces.impls.SetPointsContainer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
 /**
@@ -34,6 +36,7 @@ public abstract class Graph {
 
     public static void erasePoints(Canvas canvas){
         canvas.getGraphicsContext2D().clearRect(0,0,sizeX,sizeY);
+        Graph.drawGrid(canvas);
     }
 
     public static void drawPoint(Canvas canvas, Point point){
@@ -86,8 +89,30 @@ public abstract class Graph {
 
     public static void redraw(Canvas canvas, SetPointsContainer pointsContainer){
         Graph.erasePoints(canvas);
-        Graph.drawGrid(canvas);
         Graph.drawPoints(canvas, pointsContainer);
+    }
+
+    public static void drawPolynomialCurve(Canvas canvas, double[] solution,int accuracy){
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        Paint fill = graphicsContext.getFill();
+        double lineWidth = graphicsContext.getLineWidth();
+        graphicsContext.setFill(Color.BLUE);
+        double pointx = -sizeX/2;
+        double pointy = 0;
+        Point tmpoint;
+        while (pointx < sizeX/2){
+            pointy = 0.0;
+            for (int i = 0; i < solution.length; i++){
+                pointy += solution[i]*Math.pow(pointx,i);
+            }
+            tmpoint = new Point(pointx,pointy,0);
+            graphicsContext.fillOval(tmpoint.getGraphicalX()-Graph.SIZE_OF_POINT/4,
+                    tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
+                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
+            System.out.println(pointx+" "+pointy);
+            pointx+=sizeX/accuracy;
+        }
+        graphicsContext.setFill(fill);
     }
 
     public static  double getSizeX(){

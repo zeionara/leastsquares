@@ -22,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import sample.Graph;
+import sample.LeastSquares;
 import sample.Point;
 
 import javax.imageio.ImageIO;
@@ -30,9 +31,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 
 public class mainController {
-    private double old_x = 0;
-    private double old_y = 0;
-
+    private double[] lastsolution;
     private SetPointsContainer pointsContainer = new SetPointsContainer();
     @FXML
     MenuBar menubar;
@@ -67,22 +66,163 @@ public class mainController {
     private alertController controller3;
     private Stage alertStage;
 
+    private Parent fxmlApprox;
+    private FXMLLoader fxmlLoader4 = new FXMLLoader();
+    private editApproxController controller4;
+    private Stage approxStage;
     @FXML
     private void initialize(){
+        pointsContainer.add(new Point(0.75,2.5,1));
+        pointsContainer.add(new Point(1.5,1.2,2));
+        pointsContainer.add(new Point(2.25,1.12,3));
+        pointsContainer.add(new Point(3,2.25,4));
+        pointsContainer.add(new Point(3.75,4.28,2));
+        initializeTableView();
+        initializeAdditiveWindows();
+    }
 
-        pointsContainer.add(new Point(12.0,12.0,1));
+    //Handlers for the events
 
-        xColumn.setCellValueFactory(new PropertyValueFactory<>("X"));
-        yColumn.setCellValueFactory(new PropertyValueFactory<>("Y"));
-        tablePoints.setItems(pointsContainer.getSet());
+    public void canvasClicked(MouseEvent e){
+        Point point = new Point(Graph.XGraphtoReal(e.getX()),Graph.YGraphtoReal(e.getY()),pointsContainer.getSet().size()+1);
+        Graph.drawPoint(graph, point);
+        pointsContainer.add(point);
+    }
 
-        pointsContainer.getSet().addListener(new ListChangeListener<Point>() {
-            @Override
-            public void onChanged(Change<? extends Point> c) {
-                System.out.println("changed!");
+    public void canvasMouseMoved(MouseEvent e){
+        coordsLabel.setText("x : "+ Graph.XGraphtoReal(e.getX())+" y : "+Graph.YGraphtoReal(e.getY()));
+    }
+
+    public void clearDataClicked(javafx.event.ActionEvent actionEvent){
+        pointsContainer.clear();
+        Graph.erasePoints(graph);
+        lastsolution = null;
+    }
+
+    public void windowResized(Number newW, Number newH){
+        graph.setWidth(newW.doubleValue() - tablePoints.getWidth() - 14);
+        graph.setHeight(newH.doubleValue() - menubar.getHeight() - 14);
+
+        Graph.setSizeX(graph.getWidth());
+        Graph.setSizeY(graph.getHeight());
+
+        Graph.redraw(graph,pointsContainer);
+        if (lastsolution != null){
+            Graph.drawPolynomialCurve(graph,lastsolution,1000);
+        }
+    }
+
+    public void editPointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
+        Point selectedPoint = tablePoints.getSelectionModel().getSelectedItem();
+        if (selectedPoint == null){
+            showAlert("Nothing to edit, point not selected");
+            return;
+        }
+        controller.setActualPoint(selectedPoint);
+        if (editPointStage == null) {
+            initializeEditPointStage(actionEvent);
+        }
+        editPointStage.show();
+    }
+
+    public void addPointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
+        if (addPointStage == null) {
+            initializeAddPointStage(actionEvent);
+        }
+        addPointStage.show();
+    }
+    public void editApproxClicked(javafx.event.ActionEvent actionEvent) throws IOException{
+        if (approxStage == null) {
+            initializeApproxStage();
+        }
+        approxStage.show();
+    }
+
+
+    public void deletePointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
+        Point selectedPoint = tablePoints.getSelectionModel().getSelectedItem();
+        if (selectedPoint == null){
+            showAlert("Nothing to delete, point not selected");
+            return;
+        }
+        int numOfDeletedPoint = selectedPoint.getNum();
+        pointsContainer.delete(selectedPoint);
+        for(Point point : pointsContainer.getSet()){
+            if (point.getNum() > numOfDeletedPoint){
+                point.setNum(point.getNum()-1);
             }
-        });
+        }
 
+        tablePoints.refresh();
+        Graph.redraw(graph,pointsContainer);
+    }
+
+    public void showAlert(String str){
+        if (alertStage == null) {
+            initializeAlertStage();
+        }
+
+        controller3.setLabelText(str);
+        alertStage.show();
+    }
+
+    public void saveClicked(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
+        fileChooser.setTitle("Select File");//Заголовок диалога
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");//Расширение
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());//Указываем текущую сцену CodeNote.mainStage
+        if (file == null){
+            return;
+        }
+
+        WritableImage wim = new WritableImage((int)graph.getWidth(), (int)graph.getHeight());
+        graph.snapshot(null,wim);
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
+        } catch (Exception s) {
+        }
+    }
+
+    //Initializations
+
+    private void initializeEditPointStage(javafx.event.ActionEvent actionEvent){
+        editPointStage = new Stage();
+        editPointStage.setResizable(false);
+        editPointStage.setTitle("Edit Point");
+        editPointStage.setScene(new Scene(fxmlEdit));
+        editPointStage.initModality(Modality.APPLICATION_MODAL);
+        editPointStage.initOwner(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());
+    }
+
+    private void initializeAddPointStage(ActionEvent actionEvent){
+        addPointStage = new Stage();
+        addPointStage.setResizable(false);
+        addPointStage.setTitle("Add Point");
+        addPointStage.setScene(new Scene(fxmlAdd));
+        addPointStage.initModality(Modality.APPLICATION_MODAL);
+        addPointStage.initOwner(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());
+    }
+
+    private void initializeAlertStage(){
+        alertStage = new Stage();
+        alertStage.setResizable(false);
+        alertStage.setTitle("Error");
+        alertStage.setScene(new Scene(fxmlAlert));
+        alertStage.initModality(Modality.APPLICATION_MODAL);
+        alertStage.initOwner(menubar.getScene().getWindow());
+    }
+
+    private void initializeApproxStage(){
+        approxStage = new Stage();
+        approxStage.setResizable(false);
+        approxStage.setTitle("Approximating");
+        approxStage.setScene(new Scene(fxmlAlert));
+        approxStage.initModality(Modality.APPLICATION_MODAL);
+        approxStage.initOwner(menubar.getScene().getWindow());
+    }
+
+    private void initializeAdditiveWindows(){
         try{
             fxmlLoader.setLocation(getClass().getResource("../fxml/editPoint.fxml"));
             fxmlEdit = fxmlLoader.load();
@@ -101,123 +241,26 @@ public class mainController {
             fxmlLoader3.setLocation(getClass().getResource("../fxml/alert.fxml"));
             fxmlAlert = fxmlLoader3.load();
             controller3 = fxmlLoader3.getController();
+
+            fxmlLoader4.setLocation(getClass().getResource("../fxml/editApprox.fxml"));
+            fxmlAlert = fxmlLoader4.load();
+            controller4 = fxmlLoader4.getController();
+            controller4.initializeTextField(LeastSquares.getRange()+"");
         } catch (IOException e){
             e.printStackTrace();
         }
     }
 
-
-    public void canvasClicked(MouseEvent e){
-        Point point = new Point(Graph.XGraphtoReal(e.getX()),Graph.YGraphtoReal(e.getY()),pointsContainer.getSet().size()+1);
-        Graph.drawPoint(graph, point);
-        pointsContainer.add(point);
+    private void initializeTableView(){
+        xColumn.setCellValueFactory(new PropertyValueFactory<>("X"));
+        yColumn.setCellValueFactory(new PropertyValueFactory<>("Y"));
+        tablePoints.setItems(pointsContainer.getSet());
     }
 
-    public void canvasMouseMoved(MouseEvent e){
-        coordsLabel.setText("x : "+ Graph.XGraphtoReal(e.getX())+" y : "+Graph.YGraphtoReal(e.getY()));
-    }
-
-    public void clearDataClicked(javafx.event.ActionEvent actionEvent){
-        pointsContainer.clear();
-        Graph.erasePoints(graph);
-        Graph.drawGrid(graph);
-    }
-
-    public void windowResized(Number newW, Number newH){
-        graph.setWidth(newW.doubleValue() - tablePoints.getWidth() - 14);
-        graph.setHeight(newH.doubleValue() - menubar.getHeight() - 14);
-        Graph.setSizeX(graph.getWidth());
-        Graph.setSizeY(graph.getHeight());
-        Graph.erasePoints(graph);
-
-        Graph.drawGrid(graph);
-        Graph.drawPoints(graph, pointsContainer);
-    }
-
-    public void editPointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
-        Point selectedPoint = tablePoints.getSelectionModel().getSelectedItem();
-        if (selectedPoint == null){
-            showAlert("Nothing to edit, point not selected");
-            return;
-        }
-
-        controller.setActualPoint(selectedPoint);
-
-
-        if (editPointStage == null) {
-            editPointStage = new Stage();
-            editPointStage.setResizable(false);
-            editPointStage.setTitle("Edit Point");
-            editPointStage.setScene(new Scene(fxmlEdit));
-            editPointStage.initModality(Modality.APPLICATION_MODAL);
-            editPointStage.initOwner(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());
-        }
-        editPointStage.show();
-    }
-
-    public void addPointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
-        if (addPointStage == null) {
-            addPointStage = new Stage();
-            addPointStage.setResizable(false);
-            addPointStage.setTitle("Add Point");
-            addPointStage.setScene(new Scene(fxmlAdd));
-            addPointStage.initModality(Modality.APPLICATION_MODAL);
-            addPointStage.initOwner(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());
-        }
-        addPointStage.show();
-    }
-
-    public void deletePointClicked(javafx.event.ActionEvent actionEvent) throws IOException{
-        Point selectedPoint = tablePoints.getSelectionModel().getSelectedItem();
-        if (selectedPoint == null){
-            showAlert("Nothing to delete, point not selected");
-            return;
-        }
-        if (selectedPoint != null){
-            System.out.println("deleted");
-            int numOfDeletedPoint = selectedPoint.getNum();
-            pointsContainer.delete(selectedPoint);
-            for(Point point : pointsContainer.getSet()){
-                if (point.getNum() > numOfDeletedPoint){
-                    point.setNum(point.getNum()-1);
-                }
-            }
-
-            tablePoints.refresh();
-            Graph.redraw(graph,pointsContainer);
-        }
-    }
-
-    public void showAlert(String str){
-            if (alertStage == null) {
-                alertStage = new Stage();
-                alertStage.setResizable(false);
-                alertStage.setTitle("Error");
-                alertStage.setScene(new Scene(fxmlAlert));
-                alertStage.initModality(Modality.APPLICATION_MODAL);
-                alertStage.initOwner(menubar.getScene().getWindow());
-            }
-
-            controller3.setLabelText(str);
-            alertStage.show();
-            return;
-        }
-
-    public void saveClicked(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
-        fileChooser.setTitle("Select File");//Заголовок диалога
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");//Расширение
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(((MenuItem) actionEvent.getSource()).getParentPopup().getScene().getWindow());//Указываем текущую сцену CodeNote.mainStage
-        if (file == null){
-            return;
-        }
-
-        WritableImage wim = new WritableImage((int)graph.getWidth(), (int)graph.getHeight());
-        graph.snapshot(null,wim);
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
-        } catch (Exception s) {
-        }
+    public void buildApprox(ActionEvent actionEvent) {
+        double[] solution = LeastSquares.getKoefficients(pointsContainer,10);
+        lastsolution = solution;
+        Graph.redraw(graph,pointsContainer);
+        Graph.drawPolynomialCurve(graph,solution,1000);
     }
 }

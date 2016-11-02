@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import sample.Graph;
 import sample.Point;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Set;
 
@@ -24,47 +25,26 @@ import java.util.Set;
  * Created by Zerbs on 30.10.2016.
  */
 public class editPointController {
+    //FXML Objects
+
     @FXML
     Button okAddingPointButton;
-    private TableView<Point> tablePoints;
-    private Canvas graph;
-    private SetPointsContainer pointsContainer;
-    private Point actualPoint;
 
-    //
+    @FXML
+    TextField setxField;
+
+    @FXML
+    TextField setyField;
+
+    //For the alert window
     protected Parent fxmlAlert;
     protected FXMLLoader fxmlLoader = new FXMLLoader();
     protected alertController controller;
     protected Stage alertStage;
-    //
-
-    public void setPointsContainer (SetPointsContainer pointsContainer){
-        this.pointsContainer = pointsContainer;
-    }
-
-    public void setTablePoints (TableView<Point> pointsData){
-        this.tablePoints = pointsData;
-    }
-
-    public void setGraph (Canvas graph){
-        this.graph = graph;
-    }
-
-
-    public SetPointsContainer getPointsContainer (){
-        return this.pointsContainer;
-    }
-
-    public TableView<Point> getTablePoints (){
-        return this.tablePoints;
-    }
-
-    public Canvas getGraph (){
-        return this.graph;
-    }
 
     @FXML
     private void initialize(){
+        //initialize alert window
         try{
             fxmlLoader.setLocation(getClass().getResource("../fxml/alert.fxml"));
             fxmlAlert = fxmlLoader.load();
@@ -74,44 +54,77 @@ public class editPointController {
         }
     }
 
-    @FXML
-    TextField setxField;
+    //External objects
+    private TableView<Point> tablePoints;
+    public void setTablePoints (TableView<Point> pointsData){
+        this.tablePoints = pointsData;
+    }
+    public TableView<Point> getTablePoints (){
+        return this.tablePoints;
+    }
 
-    @FXML
-    TextField setyField;
+    private Canvas graph;
+    public void setGraph (Canvas graph){
+        this.graph = graph;
+    }
+    public Canvas getGraph (){
+        return this.graph;
+    }
 
-    private double x = 0;
-    private double y = 0;
+    private SetPointsContainer pointsContainer;
+    public void setPointsContainer (SetPointsContainer pointsContainer){
+        this.pointsContainer = pointsContainer;
+    }
+    public SetPointsContainer getPointsContainer (){
+        return this.pointsContainer;
+    }
 
+    private Point actualPoint;
     public void setActualPoint(Point newPoint){
         actualPoint = newPoint;
         setxField.setText(actualPoint.getX()+"");
         setyField.setText(actualPoint.getY()+"");
     }
 
+    protected void initializeAlert(javafx.event.ActionEvent actionEvent){
+        if (alertStage == null) {
+            alertStage = new Stage();
+            alertStage.setResizable(false);
+            alertStage.setTitle("Error");
+            alertStage.setScene(new Scene(fxmlAlert));
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            alertStage.initOwner(((Button)actionEvent.getSource()).getScene().getWindow());
+        }
+    }
+
+    //Handlers for the events
+
     public void okAction(javafx.event.ActionEvent actionEvent){
-        double x;
-        double y;
-        try{
-            x = Double.parseDouble(setxField.getText());
-            y = Double.parseDouble(setyField.getText());
+        double[] coordinates;
+        try {
+            coordinates = tryParseXY(actionEvent);
         } catch (NumberFormatException e){
-            if (alertStage == null) {
-                alertStage = new Stage();
-                alertStage.setResizable(false);
-                alertStage.setTitle("Error");
-                alertStage.setScene(new Scene(fxmlAlert));
-                alertStage.initModality(Modality.APPLICATION_MODAL);
-                alertStage.initOwner(((Button)actionEvent.getSource()).getScene().getWindow());
-            }
-            alertStage.show();
             return;
         }
-        actualPoint.setX(x);
-        actualPoint.setY(y);
+
+        actualPoint.setX(coordinates[0]);
+        actualPoint.setY(coordinates[1]);
         tablePoints.refresh();
         Graph.redraw(graph,pointsContainer);
         cancelPressed(actionEvent);
+    }
+
+    protected double[] tryParseXY(javafx.event.ActionEvent actionEvent){
+        double[] coordinates = {0.0,0.0};
+        try{
+            coordinates[0] = Double.parseDouble(setxField.getText());
+            coordinates[1] = Double.parseDouble(setyField.getText());
+        } catch (NumberFormatException e){
+            initializeAlert(actionEvent);
+            alertStage.show();
+            throw e;
+        }
+        return coordinates;
     }
 
     public void cancelPressed(javafx.event.ActionEvent actionEvent){

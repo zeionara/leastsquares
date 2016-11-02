@@ -66,14 +66,13 @@
                    <MenuItem mnemonicParsing="false" onAction="#addPointClicked" text="Add point" />
                   <MenuItem mnemonicParsing="false" onAction="#deletePointClicked" text="Delete point" />
                   <MenuItem mnemonicParsing="false" onAction="#editPointClicked" text="Edit point" />
-                  <MenuItem mnemonicParsing="false" text="Edit approximate" />
+                  <MenuItem mnemonicParsing="false" onAction="#editApproxClicked" text="Edit approximate" />
                   <MenuItem mnemonicParsing="false" onAction="#clearDataClicked" text="Clear all" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Build">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Build" />
-                  <MenuItem mnemonicParsing="false" text="Rebuild" />
+                  <MenuItem mnemonicParsing="false" onAction="#buildApprox" text="Build" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">

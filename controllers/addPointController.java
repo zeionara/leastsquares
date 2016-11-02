@@ -13,24 +13,14 @@ import sample.Point;
 public class addPointController extends editPointController {
     @Override
     public void okAction(javafx.event.ActionEvent actionEvent){
-        double x;
-        double y;
-        try{
-            x = Double.parseDouble(setxField.getText());
-            y = Double.parseDouble(setyField.getText());
+        double[] coordinates;
+        try {
+            coordinates = tryParseXY(actionEvent);
         } catch (NumberFormatException e){
-            if (alertStage == null) {
-                alertStage = new Stage();
-                alertStage.setResizable(false);
-                alertStage.setTitle("Error");
-                alertStage.setScene(new Scene(fxmlAlert));
-                alertStage.initModality(Modality.APPLICATION_MODAL);
-                alertStage.initOwner(((Button)actionEvent.getSource()).getScene().getWindow());
-            }
-            alertStage.show();
             return;
         }
-        Point point = new Point(x,y,getPointsContainer().getSet().size()+1);
+
+        Point point = new Point(coordinates[0],coordinates[1],getPointsContainer().getSet().size()+1);
         Graph.drawPoint(getGraph(), point);
         getPointsContainer().add(point);
         cancelPressed(actionEvent);
