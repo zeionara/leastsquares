@@ -45,7 +45,7 @@
             </AnchorPane>
             <AnchorPane pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
                <children>
-                  <Canvas fx:id="graph" height="2000.0" onMouseClicked="#canvasClicked" onMouseMoved="#canvasMouseMoved" width="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Canvas fx:id="graph" height="2000.0" onMouseClicked="#canvasClicked" onMouseMoved="#canvasMouseMoved" onScroll="#canvasScrolled" width="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

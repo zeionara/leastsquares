@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -82,11 +83,6 @@ public class mainController {
     private Stage approxStage;
     @FXML
     private void initialize(){
-        pointsContainer.add(new Point(0.75,2.5,1));
-        pointsContainer.add(new Point(1.5,1.2,2));
-        pointsContainer.add(new Point(2.25,1.12,3));
-        pointsContainer.add(new Point(3,2.25,4));
-        pointsContainer.add(new Point(3.75,4.28,2));
         initializeTableView();
         initializeAdditiveWindows();
     }
@@ -94,13 +90,35 @@ public class mainController {
     //Handlers for the events
 
     public void canvasClicked(MouseEvent e){
-        Point point = new Point(Graph.XGraphtoReal(e.getX()),Graph.YGraphtoReal(e.getY()),pointsContainer.getSet().size()+1);
+        double x = new BigDecimal(Graph.XGraphtoReal(e.getX())).setScale(2, RoundingMode.UP).doubleValue();
+        double y = new BigDecimal(Graph.YGraphtoReal(e.getY())).setScale(2, RoundingMode.UP).doubleValue();
+        Point point = new Point(x,y,pointsContainer.getSet().size()+1);
         Graph.drawPoint(graph, point);
         pointsContainer.add(point);
     }
 
+    public void canvasScrolled(ScrollEvent e){
+        if ((e.getDeltaY() < 0)){
+            Graph.setScale(Graph.getScale()+Graph.SCALE_DELTA);
+            Graph.redraw(graph,pointsContainer);
+            if (lastbadsolution != null){
+                Graph.drawPolynomialCurve(graph,lastbadsolution,1000,Color.RED);
+                Graph.drawPolynomialCurve(graph,lastgoodsolution,1000,Color.GREEN);
+            }
+        } else if (Graph.getScale() > Graph.SCALE_DELTA*2){
+            Graph.setScale(Graph.getScale()-Graph.SCALE_DELTA);
+            Graph.redraw(graph,pointsContainer);
+            if (lastbadsolution != null){
+                Graph.drawPolynomialCurve(graph,lastbadsolution,1000,Color.RED);
+                Graph.drawPolynomialCurve(graph,lastgoodsolution,1000,Color.GREEN);
+            }
+        }
+    }
+
     public void canvasMouseMoved(MouseEvent e){
-        coordsLabel.setText("x : "+ Graph.XGraphtoReal(e.getX())+" y : "+Graph.YGraphtoReal(e.getY()));
+        double x = new BigDecimal(Graph.XGraphtoReal(e.getX())).setScale(2, RoundingMode.UP).doubleValue();
+        double y = new BigDecimal(Graph.XGraphtoReal(e.getY())).setScale(2, RoundingMode.UP).doubleValue();
+        coordsLabel.setText("x : "+x+" y : "+y);
     }
 
     public void clearDataClicked(javafx.event.ActionEvent actionEvent){

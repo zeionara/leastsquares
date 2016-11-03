@@ -39,10 +39,10 @@ public class Point {
     }
 
     public double getGraphicalX(){
-        return Graph.getSizeX()/2 + X.getValue();
+        return (Graph.getSizeX()/2 + X.getValue()/Graph.getScale());
     }
     public double getGraphicalY(){
-        return Graph.getSizeY()/2 - Y.getValue();
+        return (Graph.getSizeY()/2 - Y.getValue()/Graph.getScale());
     }
 
     public DoubleProperty xProperty() {return X;}

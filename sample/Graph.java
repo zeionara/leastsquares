@@ -14,15 +14,25 @@ public abstract class Graph {
     public static final double SIZE_OF_POINT = 3;
     public static final double SIZE_OF_TAG = 5;
     public static final double OFFSET_TO_TAG = 10;
+    public static final double SCALE_DELTA = 0.05;
+
+    private static double scale = 1d;
     private static double sizeX = 2000d;
     private static double sizeY = 2000d;
 
+    public static void setScale(double scale){
+        Graph.scale = scale;
+    }
+
+    public static double getScale(){
+        return Graph.scale;
+    }
 
     public static double YGraphtoReal(double y){
-        return (Graph.getSizeY()/2 - y);
+        return (Graph.getSizeY()/2 - y)*scale;
     }
     public static double XGraphtoReal(double x){
-        return (x - Graph.getSizeX()/2);
+        return (x - Graph.getSizeX()/2)*scale;
     }
 
     public static void drawPoints(Canvas canvas, SetPointsContainer pointsContainer){
@@ -51,22 +61,21 @@ public abstract class Graph {
     public static void drawGrid(Canvas canvas){
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        //graphicsContext.fillRect(0,0,100,100);
         graphicsContext.setLineWidth(0.5);
         graphicsContext.strokeLine(sizeX/2,sizeY,sizeX/2,0);
         graphicsContext.strokeLine(sizeX,sizeY/2,0,sizeY/2);
 
         Font oldFont = graphicsContext.getFont();
         graphicsContext.setFont(new Font("Arial",7));
-        double pointy = -sizeY/2;
-        while (pointy < sizeY/2){
+        double pointy = -sizeY/2*scale;
+        while (pointy < sizeY/2*scale){
             drawTagY(canvas,new Point(0,pointy,0));
-            pointy+=sizeY/20;
+            pointy+=sizeY/20*scale;
         }
-        pointy = -sizeX/2;
-        while (pointy < sizeX/2){
+        pointy = -sizeX/2*scale;
+        while (pointy < sizeX/2*scale){
             drawTagX(canvas,new Point(pointy,0,0));
-            pointy+=sizeX/20;
+            pointy+=sizeX/20*scale;
         }
         graphicsContext.setFont(oldFont);
     }
@@ -96,10 +105,10 @@ public abstract class Graph {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         Paint fill = graphicsContext.getFill();
         graphicsContext.setFill(color);
-        double pointx = -sizeX/2;
+        double pointx = -sizeX/2*scale;
         double pointy = 0;
         Point tmpoint;
-        while (pointx < sizeX/2){
+        while (pointx < sizeX/2*scale){
             pointy = 0.0;
             for (int i = 0; i < solution.length; i++){
                 pointy += solution[i]*Math.pow(pointx,i);
@@ -108,8 +117,7 @@ public abstract class Graph {
             graphicsContext.fillOval(tmpoint.getGraphicalX()-Graph.SIZE_OF_POINT/4,
                     tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
                     Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
-            System.out.println(pointx+" "+pointy);
-            pointx+=sizeX/accuracy;
+            pointx+=sizeX/accuracy*scale;
         }
         graphicsContext.setFill(fill);
     }
