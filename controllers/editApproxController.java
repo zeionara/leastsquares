@@ -65,6 +65,11 @@ public class editApproxController {
             alertStage.show();
             throw e;
         }
+        if (range < 2){
+            initializeAlert(actionEvent);
+            alertStage.show();
+            throw new NumberFormatException();
+        }
         return range;
     }
 

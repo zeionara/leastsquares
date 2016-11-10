@@ -42,6 +42,9 @@ public class mainController {
     MenuBar menubar;
 
     @FXML
+    MenuItem buildMenuItem;
+
+    @FXML
     javafx.scene.control.Label coordsLabel;
 
     @FXML
@@ -83,6 +86,16 @@ public class mainController {
     private Stage approxStage;
     @FXML
     private void initialize(){
+        pointsContainer.getSet().addListener(new ListChangeListener<Point>() {
+            @Override
+            public void onChanged(Change<? extends Point> c) {
+                if (pointsContainer.getSet().size() < 2){
+                    buildMenuItem.setDisable(true);
+                } else {
+                    buildMenuItem.setDisable(false);
+                }
+            }
+        });
         initializeTableView();
         initializeAdditiveWindows();
     }
@@ -288,7 +301,7 @@ public class mainController {
     }
 
     public void buildApprox(ActionEvent actionEvent) {
-        double[] solution = LeastSquares.getKoefficients(pointsContainer,10);
+        double[] solution = LeastSquares.getKoefficients(pointsContainer);
         lastbadsolution = solution;
         Graph.redraw(graph,pointsContainer);
         Graph.drawPolynomialCurve(graph,solution,1000,Color.BLUE);
@@ -303,7 +316,7 @@ public class mainController {
         }
         pointsContainer.delete(sillyDot);
         tablePoints.refresh();
-        solution = LeastSquares.getKoefficients(pointsContainer,10);
+        solution = LeastSquares.getKoefficients(pointsContainer);
         pointsContainer.add(sillyDot);
         tablePoints.refresh();
         lastgoodsolution = solution;

@@ -17,9 +17,8 @@ public class LeastSquares {
         LeastSquares.range = range;
     }
 
-    public static double[] getKoefficients(SetPointsContainer pointsContainer, int numOfMembers){
-        ArrayList<Double> koefficients = new ArrayList<>();
-        double[][] matrix = getMatrix(pointsContainer,range);
+    public static double[] getKoefficients(SetPointsContainer pointsContainer){
+        double[][] matrix = getMatrix(pointsContainer,range+1);
         double[] solve = solveSystem(matrix,0.0001);
 
         return solve;
@@ -43,7 +42,7 @@ public class LeastSquares {
                 double sumA = 0, sumB = 0;
                 for (int k = 0; k < pointsContainer.getSet().size(); k++)
                 {
-                    sumA += Math.pow(pointsContainer.getSet().get(k).getX(), i) * Math.pow(pointsContainer.getSet().get(k).getX(), j);
+                    sumA += Math.pow(pointsContainer.getSet().get(k).getX(), i+j);
                     sumB += pointsContainer.getSet().get(k).getY() * Math.pow(pointsContainer.getSet().get(k).getX(), i);
                 }
                 matrix[i][j] = sumA;
@@ -73,25 +72,24 @@ public class LeastSquares {
             // Посчитаем значения неизвестных на текущей итерации
             // в соответствии с теоретическими формулами
             for (int i = 0; i < size; i++) {
-                // Инициализируем i-ую неизвестную значением
-                // свободного члена i-ой строки матрицы
+
+
                 currentVariableValues[i] = matrix[i][size];
 
-                // Вычитаем сумму по всем отличным от i-ой неизвестным
+
                 for (int j = 0; j < size; j++) {
-                    // При j < i можем использовать уже посчитанные
-                    // на этой итерации значения неизвестных
+
                     if (j < i) {
                         currentVariableValues[i] -= matrix[i][j] * currentVariableValues[j];
                     }
 
-                    // При j > i используем значения с прошлой итерации
+
                     if (j > i) {
                         currentVariableValues[i] -= matrix[i][j] * previousVariableValues[j];
                     }
                 }
 
-                // Делим на коэффициент при i-ой неизвестной
+                
                 currentVariableValues[i] /= matrix[i][i];
             }
 

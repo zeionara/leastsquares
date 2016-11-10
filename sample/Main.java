@@ -44,9 +44,12 @@ public class Main extends Application {
         Parent root = null;
         mainController controller;
         try{
+            System.out.print("--");
             fxmlLoader.setLocation(getClass().getResource("../fxml/main.fxml"));
+
             root = fxmlLoader.load();
             System.out.println(root);
+
             controller = fxmlLoader.getController();
         } catch (IOException e){
             e.printStackTrace();
@@ -69,7 +72,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        launch(args);
+        System.out.println("ok");launch(args);
     }
 
 }
