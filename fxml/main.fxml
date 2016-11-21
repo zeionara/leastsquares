@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.mainController">
+   <children>
+      <GridPane prefHeight="378.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="458.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <AnchorPane prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="tablePoints" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="X" fx:id="xColumn" />
+                      <TableColumn fx:id="yColumn" prefWidth="75.0" text="Y" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </AnchorPane>
+            <AnchorPane pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
+               <children>
+                  <Canvas fx:id="graph" height="2000.0" onMouseClicked="#canvasClicked" onMouseMoved="#canvasMouseMoved" onScroll="#canvasScrolled" width="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Canvas>
+                  <Label fx:id="coordsLabel" layoutX="-14.0" layoutY="-8.0" prefHeight="17.0" prefWidth="457.0" text="x : None y : None" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+                  <Label fx:id="badSolutionTextField" layoutX="-14.0" layoutY="1954.0" prefHeight="17.0" prefWidth="457.0" text="None" textFill="#ff2600" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" />
+                  <Label fx:id="goodSolutionTextField" layoutY="1951.0" prefHeight="17.0" prefWidth="457.0" text="None" textFill="LIME" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <MenuBar fx:id="menubar" prefHeight="25.0" prefWidth="362.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="Image">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#saveClicked" text="Save" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                   <MenuItem mnemonicParsing="false" onAction="#addPointClicked" text="Add point" />
+                  <MenuItem mnemonicParsing="false" onAction="#deletePointClicked" text="Delete point" />
+                  <MenuItem mnemonicParsing="false" onAction="#editPointClicked" text="Edit point" />
+                  <MenuItem mnemonicParsing="false" onAction="#editApproxClicked" text="Edit approximate" />
+                  <MenuItem mnemonicParsing="false" onAction="#clearDataClicked" text="Clear all" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Build">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#buildApprox" text="Build" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </children>
+</VBox>

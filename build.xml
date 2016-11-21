@@ -1,0 +1,36 @@
+<project name="LeastSquaresBuild" default="all">
+  <property name="build.dir" value="build"/>
+  <property name="class.dir" value="${build.dir}/class"/>
+  <property name="fxml.dest.dir" value="${build.dir}/class/fxml"/>
+  <property name="fxml.src.dir" value="src/fxml"/>
+  <property name="jarchive.file" value="${build.dir}/leastsquares.jar"/>
+
+  <target name="make.dirs" description="Make necessary dirs">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${class.dir}"/>
+  </target>
+  <target name="compile" description="Compile a program" depends="make.dirs">
+    <javac destdir="${class.dir}">
+      <src path="src"/>
+    </javac>
+    <copy todir="${fxml.dest.dir}">
+      <fileset dir="${fxml.src.dir}"/>
+    </copy>
+  </target>
+  <target name="jar.create" description="Create a jar" depends="compile">
+    <jar destfile="${jarchive.file}">
+      <fileset dir="${class.dir}">
+        <include name="**/**/*.class"/>
+        <include name="**/**/*.fxml"/>
+        <exclude name="**/**/.git"/>
+      </fileset>
+      <manifest>
+        <attribute name="Main-Class" value="sample.Main"/>
+      </manifest>
+    </jar>
+  </target>
+  <target name="all" description="Build a program" depends="jar.create"/>
+  <target name="cleanup" description="Delete build">
+    <delete dir="${build.dir}"/>
+  </target>
+</project>
