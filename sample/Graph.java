@@ -1,11 +1,15 @@
 package sample;
 
+import Calculator.Calculator;
 import interfaces.impls.SetPointsContainer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by Zerbs on 01.11.2016.
@@ -118,6 +122,36 @@ public abstract class Graph {
                     tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
                     Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
             pointx+=sizeX/accuracy*scale;
+        }
+        graphicsContext.setFill(fill);
+    }
+
+    public static void drawPolynomialCurve(Canvas canvas, String equation,int accuracy,Paint color){
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        Paint fill = graphicsContext.getFill();
+        graphicsContext.setFill(color);
+        double pointx = -sizeX/2*scale;
+        double pointy = 0;
+        Point tmpoint;
+        while (pointx < sizeX/2*scale){
+            pointy = Double.parseDouble(Calculator.Calculate(equation.replace("x",pointx+"")));
+            tmpoint = new Point(pointx,pointy,0);
+            graphicsContext.fillOval(tmpoint.getGraphicalX()-Graph.SIZE_OF_POINT/4,
+                    tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
+                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
+            pointx+=sizeX/accuracy*scale;
+        }
+        graphicsContext.setFill(fill);
+    }
+
+    public static void drawCurve(Canvas canvas, ArrayList<Point> points, Paint color){
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        Paint fill = graphicsContext.getFill();
+        graphicsContext.setFill(color);
+        for (Point point : points){
+            graphicsContext.fillOval(point.getGraphicalX()-Graph.SIZE_OF_POINT/4,
+                    point.getGraphicalY()-Graph.SIZE_OF_POINT/4,
+                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
         }
         graphicsContext.setFill(fill);
     }
