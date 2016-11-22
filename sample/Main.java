@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.heightProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
             ((mainController)fxmlLoader.getController()).windowResized(primaryStage.getWidth(),newSceneHeight);
         });
-        primaryStage.setTitle("Method Predictora Correctora");
+        primaryStage.setTitle("Predictor-Corrector Method");
         primaryStage.show();
     }
 

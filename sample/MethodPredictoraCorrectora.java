@@ -8,18 +8,20 @@ import java.util.ArrayList;
  * Created by Zerbs on 21.11.2016.
  */
 public class MethodPredictoraCorrectora {
+    private static final int beginNumOfPoints = 4;
+
     public static ArrayList<Point> findPoints(String expression, double x0, double y0, double epsilon, double xn){
-        ArrayList<Point> points = MethodRungeKutta.findPoints(expression, x0, y0, epsilon, 4);
+        ArrayList<Point> points = MethodRungeKutta.findPoints(expression, x0, y0, epsilon, beginNumOfPoints);
         double h = MethodRungeKutta.getStep();
 
         ArrayList<Double> funcs = fillFirstFourFuncs(expression, points);
         String newexpression;
-        double x = points.get(3).getX();
+        double x = points.get(beginNumOfPoints-1).getX();
         double y;
 
         double func;
 
-        int i = 4;
+        int i = beginNumOfPoints;
         double y_pre;
         while (x < xn){
             x+=h;
