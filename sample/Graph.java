@@ -1,7 +1,6 @@
 package sample;
 
 import Calculator.Calculator;
-import interfaces.impls.SetPointsContainer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -11,9 +10,6 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.Set;
 
-/**
- * Created by Zerbs on 01.11.2016.
- */
 public abstract class Graph {
     public static final double SIZE_OF_POINT = 3;
     public static final double SIZE_OF_TAG = 5;
@@ -39,32 +35,14 @@ public abstract class Graph {
         return (x - Graph.getSizeX()/2)*scale;
     }
 
-    public static void drawPoints(Canvas canvas, SetPointsContainer pointsContainer){
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
-        for (Point point : pointsContainer.getSet()){
-            graphicsContext.fillOval(point.getGraphicalX()-SIZE_OF_POINT/2,point.getGraphicalY()-SIZE_OF_POINT/2,SIZE_OF_POINT,SIZE_OF_POINT);
-            graphicsContext.fillText(point.getNum()+"",point.getGraphicalX(),point.getGraphicalY());
-        }
-    }
-
     public static void erasePoints(Canvas canvas){
         canvas.getGraphicsContext2D().clearRect(0,0,sizeX,sizeY);
         Graph.drawGrid(canvas);
     }
 
-    public static void drawPoint(Canvas canvas, Point point){
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
-        graphicsContext.fillOval(point.getGraphicalX()-Graph.SIZE_OF_POINT/2,
-                                    point.getGraphicalY()-Graph.SIZE_OF_POINT/2,
-                                    Graph.SIZE_OF_POINT, Graph.SIZE_OF_POINT);
-        graphicsContext.fillText(point.getNum()+"",point.getGraphicalX(),point.getGraphicalY());
-    }
-
     public static void drawGrid(Canvas canvas){
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
+        graphicsContext.setFill(Color.BLACK);
         graphicsContext.setLineWidth(0.5);
         graphicsContext.strokeLine(sizeX/2,sizeY,sizeX/2,0);
         graphicsContext.strokeLine(sizeX,sizeY/2,0,sizeY/2);
@@ -100,60 +78,23 @@ public abstract class Graph {
         graphicsContext.fillText((int)point.getX()+"",point.getGraphicalX(),point.getGraphicalY()+OFFSET_TO_TAG);
     }
 
-    public static void redraw(Canvas canvas, SetPointsContainer pointsContainer){
+    public static void redraw(Canvas canvas){
         Graph.erasePoints(canvas);
-        Graph.drawPoints(canvas, pointsContainer);
-    }
-
-    public static void drawPolynomialCurve(Canvas canvas, double[] solution,int accuracy,Paint color){
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        Paint fill = graphicsContext.getFill();
-        graphicsContext.setFill(color);
-        double pointx = -sizeX/2*scale;
-        double pointy = 0;
-        Point tmpoint;
-        while (pointx < sizeX/2*scale){
-            pointy = 0.0;
-            for (int i = 0; i < solution.length; i++){
-                pointy += solution[i]*Math.pow(pointx,i);
-            }
-            tmpoint = new Point(pointx,pointy,0);
-            graphicsContext.fillOval(tmpoint.getGraphicalX()-Graph.SIZE_OF_POINT/4,
-                    tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
-                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
-            pointx+=sizeX/accuracy*scale;
-        }
-        graphicsContext.setFill(fill);
-    }
-
-    public static void drawPolynomialCurve(Canvas canvas, String equation,int accuracy,Paint color){
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        Paint fill = graphicsContext.getFill();
-        graphicsContext.setFill(color);
-        double pointx = -sizeX/2*scale;
-        double pointy = 0;
-        Point tmpoint;
-        while (pointx < sizeX/2*scale){
-            pointy = Double.parseDouble(Calculator.Calculate(equation.replace("x",pointx+"")));
-            tmpoint = new Point(pointx,pointy,0);
-            graphicsContext.fillOval(tmpoint.getGraphicalX()-Graph.SIZE_OF_POINT/4,
-                    tmpoint.getGraphicalY()-Graph.SIZE_OF_POINT/4,
-                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
-            pointx+=sizeX/accuracy*scale;
-        }
-        graphicsContext.setFill(fill);
     }
 
     public static void drawCurve(Canvas canvas, ArrayList<Point> points, Paint color){
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         Paint fill = graphicsContext.getFill();
         graphicsContext.setFill(color);
-        for (Point point : points){
-            graphicsContext.fillOval(point.getGraphicalX()-Graph.SIZE_OF_POINT/4,
-                    point.getGraphicalY()-Graph.SIZE_OF_POINT/4,
-                    Graph.SIZE_OF_POINT/2, Graph.SIZE_OF_POINT/2);
+        try {
+            for (Point point : points) {
+                graphicsContext.fillOval(point.getGraphicalX() - Graph.SIZE_OF_POINT / 4,
+                        point.getGraphicalY() - Graph.SIZE_OF_POINT / 4,
+                        Graph.SIZE_OF_POINT / 2, Graph.SIZE_OF_POINT / 2);
+            }
+        } finally {
+            graphicsContext.setFill(fill);
         }
-        graphicsContext.setFill(fill);
     }
 
     public static  double getSizeX(){

@@ -228,7 +228,7 @@ public class Calculator {
 
             //System.out.println("argument2 = "+argument2);
 
-            System.out.println(argument1+operator.toString()+argument2);
+            //System.out.println(argument1+operator.toString()+argument2);
             expression = expression.replace(argument1+operator+argument2,operator.getValue(Double.parseDouble(argument1),Double.parseDouble(argument2))+"");
             //position = expression.indexOf(operator.toString());
             position = indexOf(expression,operator.toString());
@@ -242,9 +242,9 @@ public class Calculator {
             return pos;
         }
         while (expression.charAt(pos-1) == 'E'){
-            System.out.println(expression);
+            //System.out.println(expression);
             pos = expression.indexOf(substring,pos+1);
-            System.out.println(pos);
+            //System.out.println(pos);
             if (pos <= 0){
                 return pos;
             }
