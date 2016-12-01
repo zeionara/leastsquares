@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="81.0" prefWidth="296.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.alertController">
+   <children>
+      <Label fx:id="alertInfo" alignment="CENTER" contentDisplay="CENTER" prefHeight="51.0" prefWidth="296.0" text="Wrong point's coordinates. Point wasn't added.">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </Label>
+      <AnchorPane prefHeight="34.0" prefWidth="296.0">
+         <children>
+            <Button defaultButton="true" layoutX="100.0" layoutY="3.0" mnemonicParsing="false" onMouseClicked="#okPressed" prefHeight="25.0" prefWidth="97.0" text="OK" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.mainController">
+   <children>
+      <GridPane prefHeight="378.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="419.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <AnchorPane prefHeight="400.0" prefWidth="458.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
+               <children>
+                  <Canvas fx:id="graph" height="366.0" layoutY="173.0" onScroll="#canvasScrolled" width="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Canvas>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <AnchorPane fx:id="sourceFieldsPane" prefHeight="47.0" prefWidth="600.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <children>
+            <Label layoutX="14.0" layoutY="6.0" prefHeight="17.0" prefWidth="47.0" text="dy/dx =" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0" />
+            <TextField fx:id="equationField" layoutX="57.0" layoutY="5.0" prefHeight="25.0" prefWidth="95.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="448.0" AnchorPane.topAnchor="5.0" />
+            <Button fx:id="buildButton" defaultButton="true" layoutX="534.0" layoutY="2.0" mnemonicParsing="false" onAction="#buildButtonClicked" text="Build" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
+            <Label layoutX="448.0" layoutY="5.0" prefHeight="17.0" prefWidth="23.0" text="ε =" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="129.0" AnchorPane.topAnchor="5.0" />
+            <TextField fx:id="epsilonField" layoutX="456.0" layoutY="5.0" prefHeight="25.0" prefWidth="70.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="58.0" AnchorPane.topAnchor="5.0" />
+            <Label layoutX="255.0" layoutY="5.0" prefHeight="17.0" prefWidth="30.0" text="y0 =" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="315.0" AnchorPane.topAnchor="5.0" />
+            <TextField fx:id="y0Field" layoutX="281.0" layoutY="5.0" prefHeight="25.0" prefWidth="62.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="257.0" AnchorPane.topAnchor="5.0" />
+            <Label layoutX="158.0" layoutY="5.0" prefHeight="17.0" prefWidth="30.0" text="x0 =" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="412.0" AnchorPane.topAnchor="5.0" />
+            <TextField layoutX="188.0" layoutY="5.0" prefHeight="25.0" prefWidth="62.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="5.0" fx:id="x0Field" />
+            <Label layoutX="351.0" layoutY="9.0" prefHeight="17.0" prefWidth="30.0" text="xn =" AnchorPane.bottomAnchor="9.0" AnchorPane.rightAnchor="219.0" AnchorPane.topAnchor="9.0" />
+            <TextField layoutX="398.0" layoutY="6.0" prefHeight="25.0" prefWidth="62.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="159.0" AnchorPane.topAnchor="5.0" fx:id="xnField" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

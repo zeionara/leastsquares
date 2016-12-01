@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="PredCorrMethod" default="run">
+  <property environment="env"/>
+  <property file="build.properties"/>
+
+  <target name="copyres">
+    <copy todir="${out.dir}" overwrite="true">
+	  <fileset dir="${source.dir}">
+	        <exclude name="**/*.java"/>
+    </fileset>
+    </copy>
+  </target>
+
+  <target name="mkdirs.compile">
+    <mkdir dir="${out.dir}"/>
+  </target>
+
+  <target name="compile" depends="mkdirs.compile, copyres">
+    <javac srcdir="${source.dir}" destdir="${out.dir}" includeAntRuntime="false" fork="true"/>
+  </target>
+
+  <target name="run" depends="compile">
+    <exec executable="java">
+      <arg line="-classpath C:\Users\Zerbs\Desktop\PredCorrMethod\${out.dir} sample.Main"/>
+    </exec>
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+</project>
